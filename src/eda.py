@@ -63,11 +63,18 @@ def perform_eda(data_path='data/dataset.csv'):
     fig, axes = plt.subplots(3, 3, figsize=(18, 15))
     axes = axes.ravel()
     
-    traits = ['Optimism', 'Stress_Level', 'Anxiety_Level', 'Emotional_Resilience', 
+    traits = ['Optimism', 'Stress_Level', 'Anxiety_Level', 'Emotional_Resilience',
               'Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism']
+    palette = sns.color_palette("husl", len(traits))
     
     for i, trait in enumerate(traits):
-        axes[i].hist(data[trait], bins=30, edgecolor='black', alpha=0.7, color=sns.color_palette("husl")[i])
+        axes[i].hist(
+            data[trait],
+            bins=30,
+            edgecolor='black',
+            alpha=0.7,
+            color=palette[i],
+        )
         axes[i].set_title(f'Distribution of {trait}', fontsize=12, fontweight='bold')
         axes[i].set_xlabel(trait)
         axes[i].set_ylabel('Frequency')

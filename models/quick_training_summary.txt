@@ -1,0 +1,12 @@
+Quick Train - Placebo Response Models
+==================================================
+Run time: 2026-02-22 18:15:23
+Data: data\X_scaled.csv, data\y_target.csv
+Train samples: 10998, Test samples: 2750
+
+              Model  Accuracy  Precision  Recall  F1_Score  ROC_AUC
+Logistic Regression    0.8044     0.7628  0.7168    0.7391   0.9041
+      Random Forest    0.8124     0.7695  0.7347    0.7517   0.9067
+                SVM    0.8138     0.7953  0.6980    0.7435   0.8915
+
+Best model: Random Forest

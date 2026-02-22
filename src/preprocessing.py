@@ -32,12 +32,22 @@ def load_and_prepare_dataset(source_path='data/Dataset.csv'):
     print("LOADING AND PREPARING DATASET")
     print("=" * 60)
     
-    # Try to load from data folder first, otherwise load from source
+    # Try to load prepared dataset if it exists and is complete
     if os.path.exists('data/dataset.csv'):
         print(f"\n1. Loading existing prepared dataset from data/dataset.csv...")
         data = pd.read_csv('data/dataset.csv')
         print(f"   Loaded shape: {data.shape}")
-        return data
+        required_cols = {
+            "Age", "Openness", "Conscientiousness", "Extraversion",
+            "Agreeableness", "Neuroticism", "Optimism", "Stress_Level",
+            "Anxiety_Level", "Emotional_Resilience", "Phase_Number",
+            "Log_Enrollment", "Status_Completed", "Is_Placebo_Controlled",
+            "Start_Year", "Start_Month", "Condition_Encoded",
+            "Gender", "Treatment_Type", "Placebo_Response",
+        }
+        if required_cols.issubset(set(data.columns)):
+            return data
+        print("   Prepared dataset is missing required columns. Rebuilding from raw dataset...")
     
     # Load dataset from source
     print(f"\n1. Loading dataset from {source_path}...")
@@ -211,6 +221,19 @@ def preprocess_data(data_path='data/dataset.csv'):
     else:
         print("   ✓ No missing values found!")
     
+    # Ensure required categorical columns exist
+    if 'Gender' not in data.columns:
+        if 'Gender_Encoded' in data.columns:
+            data['Gender'] = data['Gender_Encoded'].map({0: 'Male', 1: 'Female'}).fillna('Male')
+        else:
+            data['Gender'] = 'Male'
+
+    if 'Treatment_Type' not in data.columns:
+        if 'Treatment_Type_Encoded' in data.columns:
+            data['Treatment_Type'] = data['Treatment_Type_Encoded'].map({0: 'Sugar Pill', 1: 'Active Drug'}).fillna('Active Drug')
+        else:
+            data['Treatment_Type'] = 'Active Drug'
+
     # Handle categorical data (if not already encoded)
     print("\n3. Encoding categorical variables...")
     le_gender = LabelEncoder()

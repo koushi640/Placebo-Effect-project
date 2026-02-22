@@ -46,14 +46,15 @@ X_PATH = os.path.join(DATA_DIR, "X_scaled.csv")
 Y_PATH = os.path.join(DATA_DIR, "y_target.csv")
 
 
-def quicktrain(test_size=0.2, random_state=42):
+def quicktrain(test_size=0.2, random_state=42, output_prefix=""):
     """Load data, train all models, save to models folder."""
     print("=" * 60)
     print("QUICK TRAIN - Placebo Response Models")
     print("=" * 60)
     print(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Data: {X_PATH}, {Y_PATH}")
-    print(f"Output: {MODELS_DIR}/")
+    prefix_info = f"{output_prefix}" if output_prefix else ""
+    print(f"Output: {MODELS_DIR}/ ({prefix_info})")
     print()
 
     if not os.path.exists(X_PATH) or not os.path.exists(Y_PATH):
@@ -112,7 +113,7 @@ def quicktrain(test_size=0.2, random_state=42):
 
         # Save each model
         safe_name = name.lower().replace(" ", "_")
-        pkl_path = os.path.join(MODELS_DIR, f"model_{safe_name}.pkl")
+        pkl_path = os.path.join(MODELS_DIR, f"{output_prefix}model_{safe_name}.pkl")
         with open(pkl_path, "wb") as f:
             pickle.dump(model, f)
         print(f"      Saved: {pkl_path}")
@@ -124,18 +125,18 @@ def quicktrain(test_size=0.2, random_state=42):
     best_model = models[best_name]
 
     # Save best model
-    best_path = os.path.join(MODELS_DIR, "best_model.pkl")
+    best_path = os.path.join(MODELS_DIR, f"{output_prefix}best_model.pkl")
     with open(best_path, "wb") as f:
         pickle.dump(best_model, f)
     print(f"\n4. Best model: {best_name} -> {best_path}")
 
     # Save summary CSV in models folder
-    summary_path = os.path.join(MODELS_DIR, "training_summary.csv")
+    summary_path = os.path.join(MODELS_DIR, f"{output_prefix}training_summary.csv")
     results_df.to_csv(summary_path, index=False)
     print(f"   Summary: {summary_path}")
 
     # Save a quick text summary in models folder
-    txt_path = os.path.join(MODELS_DIR, "training_summary.txt")
+    txt_path = os.path.join(MODELS_DIR, f"{output_prefix}training_summary.txt")
     with open(txt_path, "w") as f:
         f.write("Quick Train - Placebo Response Models\n")
         f.write("=" * 50 + "\n")
@@ -148,7 +149,7 @@ def quicktrain(test_size=0.2, random_state=42):
 
     # Also save to reports for compatibility with main pipeline
     os.makedirs(REPORTS_DIR, exist_ok=True)
-    reports_csv = os.path.join(REPORTS_DIR, "model_results_summary.csv")
+    reports_csv = os.path.join(REPORTS_DIR, f"{output_prefix}model_results_summary.csv")
     results_df.to_csv(reports_csv, index=False)
 
     print("\n" + "=" * 60)
